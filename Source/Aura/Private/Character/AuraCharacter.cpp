@@ -39,14 +39,19 @@ void AAuraCharacter::OnRep_PlayerState()
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
-	AAuraPlayerState* AuraPlayerState = Controller->GetPlayerState<AAuraPlayerState>();
-	check(AuraPlayerState);
-	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
-	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
-	AttributeSet = AuraPlayerState->GetAttributeSet();
+	AController* CharacterController = GetController();
+	AAuraPlayerState* AuraPlayerState = nullptr;
+	if (CharacterController)
+	{
+		AuraPlayerState = CharacterController->GetPlayerState<AAuraPlayerState>();
+		check(AuraPlayerState);
+		AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
+		AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+		AttributeSet = AuraPlayerState->GetAttributeSet();
+	}
 
 	// Test for null. The client wont have a controller for all players
-	if (AAuraPlayerController* AuraPlayercontroller = Cast<AAuraPlayerController>(GetController()))
+	if (AAuraPlayerController* AuraPlayercontroller = Cast<AAuraPlayerController>(CharacterController))
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayercontroller->GetHUD()))
 		{
