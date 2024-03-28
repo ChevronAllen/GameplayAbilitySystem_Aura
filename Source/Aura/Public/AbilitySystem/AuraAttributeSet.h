@@ -55,17 +55,6 @@ public:
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-	/*
-	*	Vital Attributes
-	*/
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
-	FGameplayAttributeData Health;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
-	FGameplayAttributeData Mana;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
 
 	/*
 	*	Primary Attributes
@@ -131,6 +120,22 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 
+	/*
+	*	Vital Attributes
+	*/
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
+	FGameplayAttributeData Health;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
+	FGameplayAttributeData Mana;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
+
+	/*
+	*	Replication Functions
+	*/
+
 	UFUNCTION()
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 	UFUNCTION()
@@ -165,8 +170,6 @@ public:
 	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
 	UFUNCTION()
 	virtual void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
-protected:
-
 
 private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)  const;
