@@ -11,7 +11,7 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
 
-UCLASS()
+UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
