@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "AttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Delegates/DelegateSignatureImpl.inl"
 #include "AuraAttributeSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -41,6 +42,8 @@ struct FEffectProperties
 	ACharacter* TargetCharacter = nullptr;
 };
 
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance< T, FDefaultDelegateUserPolicy>::FFuncPtr;
 /**
  * 
  */
@@ -54,7 +57,8 @@ public:
 
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
-
+	
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 
 	/*
 	*	Primary Attributes
