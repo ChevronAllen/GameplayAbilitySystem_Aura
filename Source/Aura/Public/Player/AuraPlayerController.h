@@ -11,6 +11,7 @@
 class UInputMappingContext;
 class UInputAction;
 class UAuraInputConfig;
+class UAuraAbilitySystemComponent;
 struct FInputActionValue;
 
 
@@ -45,4 +46,10 @@ private:
 	void AbilityInputTagPressed(FGameplayTag InputTasg);
 	void AbilityInputTagReleased(FGameplayTag InputTasg);
 	void AbilityInputTagHeld(FGameplayTag InputTasg);
+
+
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySyustemComponent;
+
+	UAuraAbilitySystemComponent* GetASC();
+
 };
