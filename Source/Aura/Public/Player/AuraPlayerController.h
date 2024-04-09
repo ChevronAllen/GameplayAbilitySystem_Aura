@@ -12,6 +12,7 @@ class UInputMappingContext;
 class UInputAction;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
+class USplineComponent;
 struct FInputActionValue;
 
 
@@ -26,9 +27,12 @@ public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
 protected:
+
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+
 private:
+
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> AuraConxtext;
 	UPROPERTY(EditAnywhere, Category = "Input")
@@ -48,8 +52,18 @@ private:
 	void AbilityInputTagHeld(FGameplayTag InputTasg);
 
 
-	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySyustemComponent;
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
 	UAuraAbilitySystemComponent* GetASC();
 
+	FVector CachedDestination = FVector::ZeroVector;
+	float FollowTime = 0.f;
+	float ShortPressThreshold = 0.5f;
+	bool bAutoRunning = false;
+	bool bTargeting = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.f;
+
+	TObjectPtr< USplineComponent> Spline;
 };
