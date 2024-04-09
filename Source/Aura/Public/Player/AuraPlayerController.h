@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Interaction/EnemyInterface.h"
+#include "GameplayTagContainer.h"
 #include "AuraPlayerController.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
+class UAuraInputConfig;
 struct FInputActionValue;
+
 
 /**
  * 
@@ -35,4 +38,11 @@ private:
 	void CursorTrace();
 	IEnemyInterface* LastActor;
 	IEnemyInterface* ThisActor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UAuraInputConfig> InputConfig;
+
+	void AbilityInputTagPressed(FGameplayTag InputTasg);
+	void AbilityInputTagReleased(FGameplayTag InputTasg);
+	void AbilityInputTagHeld(FGameplayTag InputTasg);
 };
