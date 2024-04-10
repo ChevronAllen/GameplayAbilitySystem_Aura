@@ -95,7 +95,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit)
 		return;
@@ -103,51 +102,11 @@ void AAuraPlayerController::CursorTrace()
 	LastActor = ThisActor;
 	ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
 
-	/**
-	* Line traces from cursor. There are several scenarios
-	* A. LastActor is null && ThisActor is null
-	*		- Do nothing.
-	* B. LastActor is null && ThisActor is valid
-	*		- Highlight ThisActor
-	* C. LastActor is valid && ThisActor is null
-	*		- UnHighlight LastActor
-	* D. Both actors are valid,but LastActor != ThisActor
-	*		- UnHighlight LastActor and Highlight ThisActor
-	* E. Both actors ar valid and are the same actor
-	*		- Do nothing
-	*/
+	if (LastActor != ThisActor)
+	{
+		if (LastActor) LastActor->UnHighlightActor();
+		if (ThisActor) ThisActor->HighlightActor();
 
-	if (LastActor == nullptr)
-	{
-		if (ThisActor != nullptr) 
-		{
-			// Case B
-			ThisActor->HighlightActor();
-		}
-		else
-		{
-			// Case A - Do nothing
-		}
-	}
-	else // LastActor is valid
-	{
-		if (ThisActor == nullptr)
-		{
-			// Case C
-			LastActor->UnHighlightActor();
-		}
-		else // ThisActor is valid
-		{
-			if (ThisActor != LastActor)
-			{
-				// Case D
-				LastActor->UnHighlightActor();
-				ThisActor->HighlightActor();
-			}else // Both Actors are the same
-			{
-				// Case E - Do nothing
-			}
-		}
 	}
 }
 
@@ -181,7 +140,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	}
 	else
 	{
-		APawn* ControlledPawn = GetPawn();
+		const APawn* ControlledPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
 		{
 			// Create a Navigation Path
@@ -191,7 +150,6 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				for (const FVector& PointLoc : NavPath->PathPoints)
 				{
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
-					DrawDebugSphere(GetWorld(), PointLoc, 8.f, 8, FColor::Green, false, 5.f);
 				}
 				CachedDestination = NavPath->PathPoints.Last(0);
 				bAutoRunning = true;
