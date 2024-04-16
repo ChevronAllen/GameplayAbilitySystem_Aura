@@ -16,6 +16,7 @@ AAuraEnemy::AAuraEnemy()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
+
 	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 
