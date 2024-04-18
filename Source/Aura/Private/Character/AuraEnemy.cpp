@@ -4,9 +4,12 @@
 #include "Character/AuraEnemy.h"
 #include "Aura/Aura.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "UI/Widget/AuraUserWidget.h"
 #include "Components/WidgetComponent.h"
+#include "AuraGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -42,12 +45,13 @@ int32 AAuraEnemy::GetPlayerLevel() const
 	return Level;
 }
 
+
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	check(AbilitySystemComponent);
 	InitAbilityActorInfo();	
-
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBarWidget->GetUserWidgetObject()))
 	{
 		AuraUserWidget->SetWidgetController(this);
@@ -59,9 +63,19 @@ void AAuraEnemy::BeginPlay()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data) {OnMaxHealthChanged.Broadcast(Data.NewValue); });
 
 
+		FOnGameplayEffectTagCountChanged GameplayEffectTagDelegate = AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().HitReact, EGameplayTagEventType::NewOrRemoved);
+		GameplayEffectTagDelegate.AddUObject(this, &AAuraEnemy::HitReactTagChanged);
+
 		OnHealthChanged.Broadcast(AuraAttributeSet->GetHealth());
 		OnMaxHealthChanged.Broadcast(AuraAttributeSet->GetMaxHealth());
 	}
+
+}
+
+void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bHitReacting = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f:BaseWalkSpeed ;
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
@@ -70,4 +84,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	InitializeDefaultAttributes();
+}
+
+void AAuraEnemy::InitializeDefaultAttributes() const
+{
+	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this, AbilitySystemComponent, CharacterClass, Level);
 }

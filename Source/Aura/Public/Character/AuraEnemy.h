@@ -7,7 +7,9 @@
 #include "Interaction/EnemyInterface.h"
 #include "Interaction/CombatInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraEnemy.generated.h"
+
 
 class UWidgetComponent;
 /**
@@ -29,6 +31,14 @@ public:
 	virtual int32 GetPlayerLevel() const override;
 	/**  end CombatInterface **/
 
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	float BaseWalkSpeed;
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	bool bHitReacting = false;
+
+	UFUNCTION()
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;
 	UPROPERTY(BlueprintAssignable)
@@ -37,9 +47,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeDefaultAttributes() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int32 Level = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HealthBar")
 	TObjectPtr<UWidgetComponent> HealthBarWidget; 
