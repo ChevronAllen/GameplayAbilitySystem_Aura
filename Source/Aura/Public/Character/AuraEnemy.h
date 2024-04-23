@@ -12,6 +12,8 @@
 
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AAuraAIController;
 /**
  * 
  */
@@ -29,6 +31,7 @@ public:
 
 	/** CombatInterface **/
 	virtual int32 GetPlayerLevel() const override;
+	virtual void Die() override;
 	/**  end CombatInterface **/
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
@@ -39,11 +42,15 @@ public:
 	UFUNCTION()
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
+	virtual void PossessedBy(AController* NewController) override;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	float LifeSpan=5.0f;
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
@@ -58,5 +65,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HealthBar")
 	TObjectPtr<UWidgetComponent> HealthBarWidget; 
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	TObjectPtr <AAuraAIController> AuraAIController;
 };

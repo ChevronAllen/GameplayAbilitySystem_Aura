@@ -8,6 +8,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
 #include "AuraGameplayTags.h"
+#include "Interaction/CombatInterface.h"
 
 #define REGISTER_ATTRIBUTE_TO_MAP(AttributeName,GameplayTag)/
 
@@ -137,6 +138,18 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
 			const bool bFatal = NewHealth <= 0;
+			if (bFatal)
+			{
+				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatar))
+				{
+					CombatInterface->Die();
+				}
+			}else
+			{
+				FAuraGameplayTags AuraGameplayTags = FAuraGameplayTags::Get();
+				FGameplayTagContainer TagContainer = FGameplayTagContainer(AuraGameplayTags.HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 		}
 	}
 	

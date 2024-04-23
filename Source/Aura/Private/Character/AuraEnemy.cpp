@@ -10,6 +10,9 @@
 #include "Components/WidgetComponent.h"
 #include "AuraGameplayTags.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AI/AuraAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -45,12 +48,21 @@ int32 AAuraEnemy::GetPlayerLevel() const
 	return Level;
 }
 
+void AAuraEnemy::Die()
+{
+	SetLifeSpan(LifeSpan);
+	Super::Die();
+
+}
+
 
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	check(AbilitySystemComponent);
 	InitAbilityActorInfo();	
+	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBarWidget->GetUserWidgetObject()))
 	{
@@ -76,6 +88,17 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f:BaseWalkSpeed ;
+}
+
+void AAuraEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!HasAuthority()) return;
+	if (AuraAIController = Cast<AAuraAIController>(NewController)) 
+	{
+		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+		AuraAIController->RunBehaviorTree(BehaviorTree);
+	}
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
