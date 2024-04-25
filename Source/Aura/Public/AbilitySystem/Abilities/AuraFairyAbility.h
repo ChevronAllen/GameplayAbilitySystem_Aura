@@ -6,6 +6,7 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "AuraFairyAbility.generated.h"
 class AAuraCharacterBase;
+class AAuraFairyBase;
 /**
  * 
  */
@@ -15,8 +16,14 @@ class AURA_API UAuraFairyAbility : public UAuraGameplayAbility
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TSubclassOf<AAuraCharacterBase> FairyActorClass;
+	TSubclassOf<AAuraFairyBase> FairyActorClass;
 
-	UPROPERTY(VisibleInstanceOnly)
-	TObjectPtr<AAuraCharacterBase> FairyActorInstance;
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<AAuraFairyBase> FairyActorInstance;
+
+	UFUNCTION(BlueprintCallable)
+	AAuraFairyBase* SpawnFairy();
+
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
 };
