@@ -10,7 +10,7 @@ class AAuraFairyBase;
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType,Blueprintable)
 class AURA_API UAuraFairyAbility : public UAuraGameplayAbility
 {
 	GENERATED_BODY()

@@ -70,4 +70,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	TObjectPtr <AAuraAIController> AuraAIController;
+
 };
