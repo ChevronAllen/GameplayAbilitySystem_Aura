@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/AuraFairyAbility.h"
 #include "Character/AuraFairyBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "AI/AuraAIController.h"
 
 AAuraFairyBase* UAuraFairyAbility::SpawnFairy()
 {
@@ -19,7 +20,16 @@ AAuraFairyBase* UAuraFairyAbility::SpawnFairy()
 
 	AAuraFairyBase* FairyActor = World->SpawnActorDeferred< AAuraFairyBase>(FairyActorClass, Transform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	UGameplayStatics::FinishSpawningActor(FairyActor, Transform);
+	
+	if (FairyActor->Controller == nullptr)
+	{
+		FTransform ControllerTransform = FTransform();
+		AAuraAIController* FairyController = World->SpawnActorDeferred<AAuraAIController>(FairyActor->AIControllerClass, ControllerTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		UGameplayStatics::FinishSpawningActor(FairyController, ControllerTransform);
+		FairyController->Possess(FairyActor);
 
+	}
+	
 	return FairyActor;
 }
 
