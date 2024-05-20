@@ -44,7 +44,20 @@ public:
 	FGameplayTag InputTag_4;
 
 	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
+	FGameplayTag Damage_Lightning;
+	FGameplayTag Damage_Arcane;
+	FGameplayTag Damage_Physical;
+
 	FGameplayTag HitReact;
+
+	FGameplayTag Abilities_Attack;
+	FGameplayTag Abilities_Summon;
+	FGameplayTag Abilities_Fire_FireBolt;
+	FGameplayTag Abilities_Fairy_Zap;
+
+	FGameplayTag Cooldown_Fire_FireBolt;
+	FGameplayTag Cooldown_Fairy_Zap;
 
 protected:
 

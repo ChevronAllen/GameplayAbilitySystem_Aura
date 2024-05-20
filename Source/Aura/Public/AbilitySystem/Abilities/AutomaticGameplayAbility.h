@@ -13,5 +13,7 @@ UCLASS()
 class AURA_API UAutomaticGameplayAbility : public UAuraGameplayAbility
 {
 	GENERATED_BODY()
-	
+public:
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void OnBlackboardEvent(const FGameplayEventData& EventData);
 };

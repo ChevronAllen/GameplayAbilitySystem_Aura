@@ -39,4 +39,18 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"), FString("Damage"));
 	GameplayTags.HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"), FString("Tag granted when Hit Reacting"));
+
+	/*
+	* Abilities
+	*/
+
+	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Fire.FireBolt"), FString("Firebolt Ability Tag"));
+	GameplayTags.Abilities_Fairy_Zap = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Fairy.Zap"), FString("Fairy Zap Ability Tag"));
+
+	/*
+	*	Cooldowns
+	*/
+
+	GameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Fire.FireBolt"), FString("Firebolt Cooldown Tag"));
+	GameplayTags.Cooldown_Fairy_Zap = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Fairy.Zap"), FString("FairyZap Cooldown Tag"));
 }

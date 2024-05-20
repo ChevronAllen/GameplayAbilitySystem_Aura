@@ -13,12 +13,13 @@ AAuraFairyBase* UAuraFairyAbility::SpawnFairy()
 		return nullptr;
 
 	UWorld* World = GetWorld();
-	FTransform Transform = GetAvatarActorFromActorInfo()->GetTransform();
+	FTransform Transform = FTransform();//GetAvatarActorFromActorInfo()->GetTransform();
 	AActor* Owner = nullptr;
 	APawn* Instigator = nullptr;
 	ESpawnActorCollisionHandlingMethod CollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	AAuraFairyBase* FairyActor = World->SpawnActorDeferred< AAuraFairyBase>(FairyActorClass, Transform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	FairyActor->AttachToActor(GetAvatarActorFromActorInfo(), FAttachmentTransformRules::KeepRelativeTransform);
 	UGameplayStatics::FinishSpawningActor(FairyActor, Transform);
 	
 	if (FairyActor->Controller == nullptr)

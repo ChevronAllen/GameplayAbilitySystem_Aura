@@ -24,14 +24,18 @@ AAuraFairyBase::AAuraFairyBase()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 }
+
 void AAuraFairyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	check(AbilityClass);
-	const FGameplayAbilitySpec AbilitySpec(AbilityClass, 1.0f);
-	AbilitySystemComponent->GiveAbility(AbilitySpec);
+	if (AbilityClass) 
+	{
+		const FGameplayAbilitySpec AbilitySpec(AbilityClass, 1.0f);
+		AutoAbilitySpecHandle = AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
 }
+
 void AAuraFairyBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

@@ -40,4 +40,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fairy")
 	TSubclassOf <UAutomaticGameplayAbility> AbilityClass;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Fairy")
+	FGameplayAbilitySpecHandle AutoAbilitySpecHandle;
 };
