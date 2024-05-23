@@ -61,17 +61,40 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC)
 {
+	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
 	//TODO Get information about all given abilitie, look up their ability info and broadcast it to widgets
 	if (!AuraASC->bStartupAbilitiesGiven) return;
 
 	FForEachAbility BroadcastDelegate;
 	TArray<FAuraAbilityInfo> AbilityInfoList;
-	BroadcastDelegate.BindLambda([this](const FGameplayAbilitySpec& AbilitySpec) 
+	BroadcastDelegate.BindLambda([this, AuraASC,AuraAttributeSet](const FGameplayAbilitySpec& AbilitySpec)
 	{
 		FGameplayTag AbilityTag = UAuraAbilitySystemComponent::GetAbilityTagFromSpec(AbilitySpec);
 		FGameplayTag InputTag = UAuraAbilitySystemComponent::GetInputTagFromSpec(AbilitySpec);
 		FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
 		Info.InputTag = InputTag;
+
+		/*
+		*	Mana Cost
+		*/
+		UGameplayEffect* CostEffect = AbilitySpec.Ability->GetCostGameplayEffect();	// Ability Spec gives access to Cooldown and Cost Effects
+		TArray<FGameplayModifierInfo> Modifiers = CostEffect->Modifiers;			// Modifiers are a list of Modifiers
+		float TotalManaCost = 0;
+		for (FGameplayModifierInfo ModInfo : Modifiers)
+		{	
+			//	Parse through the list of Modifiers. Totalling additive attribute modifier effects only
+			if (ModInfo.Attribute == AuraAttributeSet->GetManaAttribute() && ModInfo.ModifierOp == EGameplayModOp::Additive)
+			{
+				float Cost = 0;
+				FGameplayEffectContextHandle EffectContextHandle;
+				const FGameplayEffectSpec EffectSpec = *AuraASC->MakeOutgoingSpec(CostEffect->StaticClass(), 1, EffectContextHandle).Data;
+				if (ModInfo.ModifierMagnitude.AttemptCalculateMagnitude(EffectSpec, Cost))
+				{
+					TotalManaCost -= Cost; // Negate since costs are negative
+				}
+			}
+		}
+		Info.ManaCost = TotalManaCost;
 
 		AbilityInfoDelegate.Broadcast(Info);
 	});
