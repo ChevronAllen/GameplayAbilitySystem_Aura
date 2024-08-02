@@ -20,6 +20,7 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	void AbilityActorInfoSet();
 
+
 	FEffectAssetTags EffectAssetTags;
 
 	FAbilitiesGiven AbilitiesGivenDelegate;
